@@ -134,7 +134,7 @@ fetch(apiUrlGeo).then(function(response) {
 var limitMiles = 500;
 var latitude = 63.004049;
 var longitude = -152.363762;
-const selectedActivities = ['Camping', 'Hunting','Fishing'];
+const selectedActivities = ['Boating', 'Camping'];
 
 function reverseGeocodeStateInput() {
 
@@ -181,35 +181,21 @@ var getParkState = function(sT) {
                     });
                     console.log(latLonArray);
                     // filter parks by calculating distance input [distance();] formula
-                    var updatedLatLonArray = latLonArray.filter(function(latLon){
-                        return distance(latitude,latLon.lat,longitude,latLon.lon) <= limitMiles 
+                    var filteredParksArray = latLonArray.filter(function(park){
+                        const withinDistance = distance(latitude,park.lat,longitude,park.lon) <= limitMiles;
+                        
+                        const activityIntersection = park.activities.filter(function(activity) {
+                            return selectedActivities.includes(activity.name); 
+                        });
+
+                        const validActivities = activityIntersection.length === selectedActivities.length;
+                        console.log(park.name,activityIntersection);
+                        return withinDistance && validActivities;
+                        
                     });
-                    console.log(updatedLatLonArray);
+                    console.log(filteredParksArray);
+                    display(filteredParksArray);
 
-                    const updatedUpdated = updatedLatLonArray.filter(function(park){
-                        // console.log(park.activities);
-                        var activities = park.activities;
-
-                        for (let x = 0; x < activities.length; x++) {
-                            // console.log("all activities below")
-                            if (!activities.includes(selectedActivities)) {
-                                return false;
-                            }
-                            else {
-                                return true;
-                            }
-                            console.log(activities);
-                        };
-
-                        // If any of the selected activities is not in the list of the park's activities, we filter this park out
-                        // for(let i = 0; i < selectedActivities.length; i++) {
-                        //   if (!activities.includes(selectedActivities[i])) {
-                        //     return false;
-                        //   }
-                        // }
-                        // // If they are all included then we return true (keep this park)
-                        // return true;
-                    });
             });
         }  else {
             console.log("something aint right");
@@ -220,24 +206,3 @@ var getParkState = function(sT) {
 console.log(distance(50, 50.1, 30, 30.31));
 
 submitBtnEl.addEventListener('click',printItems);
-// getParkActivities();
-// getParkState()
-
-// User sees a bunch of checkboxes
-
-// User clicks on however many checkboxes of activities
-
-// Grab all of the checked checkboxes and store them in an array
-// const selectedActivities = ['Hiking', 'Fishing', 'Canoeing']
-
-// const updatedUpdated = updatedLonLongArr.filter(function(park){
-//   var activities = park.activities
-//   // If any of the selected activities is not in the list of the park's activities, we filter this park out
-//   for(let i = 0; i < selectedActivities.length; i++) {
-//     if (!activities.includes(selectedActivities[i])) {
-//       return false;
-//     }
-//   }
-//   // If they are all included then we return true (keep this park)
-//   return true;
-// })
