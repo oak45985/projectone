@@ -52,20 +52,27 @@ const stateAbbrev = [
     {full: 'Wyoming', st: 'WY'},
     
 ]
-var campInputEl = document.querySelector("#hiking");
-var hikeInputEl = document.querySelector("#camping");
-var fishInputEl = document.querySelector("#fishing");
 var cityInputEl = document.querySelector("#city");
 var stInputEl = document.querySelector("#multi-state");
 var currentGeoInputEl = document.querySelector("#current-geo");
 var distanceInputEl = document.querySelector("#distance");
 var submitBtnEl = document.querySelector("#submitbtn");
+var selectedActivities = [];
 
-function printItems(campInputEl, hikeInputEl, fishInputEl, cityInputEl, stInputEl, currentGeoInputEl, distanceInputEl) {
+function printItems(event) {
     event.preventDefault();
-    console.log(campInputEl, hikeInputEl, fishInputEl, cityInputEl, stInputEl, currentGeoInputEl, distanceInputEl)
+    selectedActivities = [];
+    if (document.querySelector("#Hiking").checked) {
+        selectedActivities.push("Hiking");
+    }
+    if (document.querySelector("#Camping").checked) {
+        selectedActivities.push("Camping");
+    }
+    if (document.querySelector("#Fishing").checked) {
+        selectedActivities.push("Fishing");
+    }
+    console.log(selectedActivities);
 };
-
 
 // calculate distance between lat/lon points
 function distance(lat1, lat2, lon1, lon2)
@@ -134,7 +141,7 @@ fetch(apiUrlGeo).then(function(response) {
 var limitMiles = 500;
 var latitude = 63.004049;
 var longitude = -152.363762;
-const selectedActivities = ['Boating', 'Camping'];
+
 
 function reverseGeocodeStateInput() {
 
@@ -194,7 +201,7 @@ var getParkState = function(sT) {
                         
                     });
                     console.log(filteredParksArray);
-                    display(filteredParksArray);
+                    // display(filteredParksArray);
 
             });
         }  else {
