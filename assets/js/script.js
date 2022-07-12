@@ -1,58 +1,4 @@
 // API Key for NPS: yybIcE0sfUB4sAAd0pJkOErlOxwfBed2vqtPbYDw  Hiking BFF8C027-7C8F-480B-A5F8-CD8CE490BFBA
-
-// https://developer.nps.gov/api/v1/parks?stateCode=TX&api_key=yybIcE0sfUB4sAAd0pJkOErlOxwfBed2vqtPbYDw
-
-// https://developer.nps.gov/api/v1/parks?parkCode=acad&api_key=yybIcE0sfUB4sAAd0pJkOErlOxwfBed2vqtPbYDw
-
-// var getParkActivities = function() {
-//     // geocoding
-//     var apiUrl = "https://developer.nps.gov/api/v1/activities/parks?stateCode=TX&api_key=yybIcE0sfUB4sAAd0pJkOErlOxwfBed2vqtPbYDw"
-
-//     fetch(apiUrl).then(function(response) {
-//         if (response.ok) {
-//             response.json().then(function(data) {
-//                 console.log("getParkActivities start");    
-//                 console.log(data)
-//                 console.log(data.data[17].parks)
-//                 console.log("getParkActivities end");
-//             });
-//         }  else {
-//             console.log("something aint right");
-//         }
-//     });
-// };
-
-function distance(lat1, lat2, lon1, lon2)
-{
-
-// The math module contains a function
-// named toRadians which converts from
-// degrees to radians.
-lon1 =  lon1 * Math.PI / 180;
-lon2 = lon2 * Math.PI / 180;
-lat1 = lat1 * Math.PI / 180;
-lat2 = lat2 * Math.PI / 180;
-
-// Haversine formula
-let dlon = lon2 - lon1;
-let dlat = lat2 - lat1;
-let a = Math.pow(Math.sin(dlat / 2), 2)
-+ Math.cos(lat1) * Math.cos(lat2)
-* Math.pow(Math.sin(dlon / 2),2);
-
-let c = 2 * Math.asin(Math.sqrt(a));
-
-// Radius of earth in kilometers. Use 3956
-// for miles
-let r = 3956;
-
-// calculate the result
-return(c * r);
-
-}
-
-
-
 const stateAbbrev = [
     {full: 'Alabama', st: 'AL'},
     {full: 'Alaska', st: 'AK'},
@@ -106,12 +52,49 @@ const stateAbbrev = [
     {full: 'Wyoming', st: 'WY'},
     
 ]
+var campInputEl = document.querySelector("#hiking");
+var hikeInputEl = document.querySelector("#camping");
+var fishInputEl = document.querySelector("#fishing");
+var cityInputEl = document.querySelector("#city");
+var stInputEl = document.querySelector("#multi-state");
+var currentGeoInputEl = document.querySelector("#current-geo");
+var distanceInputEl = document.querySelector("#distance");
+var submitBtnEl = document.querySelector("#submitbtn");
+
+function printItems(campInputEl, hikeInputEl, fishInputEl, cityInputEl, stInputEl, currentGeoInputEl, distanceInputEl) {
+    event.preventDefault();
+    console.log(campInputEl, hikeInputEl, fishInputEl, cityInputEl, stInputEl, currentGeoInputEl, distanceInputEl)
+};
+
+
+// calculate distance between lat/lon points
+function distance(lat1, lat2, lon1, lon2)
+{
+
+lon1 =  lon1 * Math.PI / 180;
+lon2 = lon2 * Math.PI / 180;
+lat1 = lat1 * Math.PI / 180;
+lat2 = lat2 * Math.PI / 180;
+
+let dlon = lon2 - lon1;
+let dlat = lat2 - lat1;
+let a = Math.pow(Math.sin(dlat / 2), 2)
++ Math.cos(lat1) * Math.cos(lat2)
+* Math.pow(Math.sin(dlon / 2),2);
+
+let c = 2 * Math.asin(Math.sqrt(a));
+
+let r = 3956;
+
+return(c * r);
+
+};
 
 // 
 // GEOLOCATION START for CURRENT POSITION
 // 
 
-navigator.geolocation.getCurrentPosition(onSuccess);
+// navigator.geolocation.getCurrentPosition(onSuccess);
 
 function onSuccess(position) {
     const {
@@ -151,7 +134,7 @@ fetch(apiUrlGeo).then(function(response) {
 var limitMiles = 500;
 var latitude = 63.004049;
 var longitude = -152.363762;
-const selectedActivities = ['Hiking', 'Canoeing','Fishing'];
+const selectedActivities = ['Camping', 'Hunting','Fishing'];
 
 function reverseGeocodeStateInput() {
 
@@ -192,37 +175,40 @@ var getParkState = function(sT) {
 
                     var parks = response.data;
 
+                    // resituate the items for only what we need park name, lat, lon, activities[]
                     var latLonArray = parks.map(function(park){
                         return {name: park.fullName, lat: park.latitude, lon: park.longitude, activities: park.activities};
                     });
                     console.log(latLonArray);
-
+                    // filter parks by calculating distance input [distance();] formula
                     var updatedLatLonArray = latLonArray.filter(function(latLon){
-                        if (distance(latitude,latLon.lat,longitude,latLon.lon) <= limitMiles) {
-                            return true;
-                        } else {
-                            return false;
-                        };
+                        return distance(latitude,latLon.lat,longitude,latLon.lon) <= limitMiles 
                     });
                     console.log(updatedLatLonArray);
 
                     const updatedUpdated = updatedLatLonArray.filter(function(park){
-                        console.log(park.activities);
+                        // console.log(park.activities);
                         var activities = park.activities;
 
                         for (let x = 0; x < activities.length; x++) {
-                            console.log(activities[x]);
-                            
-                        }
+                            // console.log("all activities below")
+                            if (!activities.includes(selectedActivities)) {
+                                return false;
+                            }
+                            else {
+                                return true;
+                            }
+                            console.log(activities);
+                        };
 
                         // If any of the selected activities is not in the list of the park's activities, we filter this park out
-                        for(let i = 0; i < selectedActivities.length; i++) {
-                          if (!activities.includes(selectedActivities[i])) {
-                            return false;
-                          }
-                        }
-                        // If they are all included then we return true (keep this park)
-                        return true;
+                        // for(let i = 0; i < selectedActivities.length; i++) {
+                        //   if (!activities.includes(selectedActivities[i])) {
+                        //     return false;
+                        //   }
+                        // }
+                        // // If they are all included then we return true (keep this park)
+                        // return true;
                     });
             });
         }  else {
@@ -232,8 +218,10 @@ var getParkState = function(sT) {
 };
 
 console.log(distance(50, 50.1, 30, 30.31));
+
+submitBtnEl.addEventListener('click',printItems);
 // getParkActivities();
-// getParkState();
+// getParkState()
 
 // User sees a bunch of checkboxes
 

@@ -3,12 +3,103 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/grids-responsive-min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.1.0/build/pure-min.css" integrity="sha384-yHIFVG6ClnONEA5yB5DJXfW2/KC173DIQrYoZMEtBvGzmf0PKiGyNEqe9N6BNDBH" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/css/style.css"/>
 </head>
 
 <body>
-    <header>
-        <h1>This is our first big project</h1>
+    <header class="pure-u-1">
+        <h1>State Parks Project</h1>
+            <form class="pure-form">
+                <fieldset>
+                    <legend>Choose your activities:</legend>
+                        <div class="pure-form">
+                            <div class="pure-u-1-4">
+                                <input type="checkbox" id="hiking" name="Hiking">
+                                <label for="Hiking">Hiking</label>
+                            </div>
+                            <div class="pure-u-1-4">
+                                <input type="checkbox" id="camping" name="Camping">
+                                <label for="Camping">Camping</label>
+                            </div>
+                            <div class="pure-u-1-4">
+                                <input type="checkbox" id="fishing" name="Fishing">
+                                <label for="Fishing">Fishing</label>
+                            </div>
+                        </div>
+                    <div id="geo">
+                        <p>Please input your current City, ST or check the box to use your current location!</p>
+                        <fieldset class="pure-form pure-g">
+                            <div class="pure-u-1-2">
+                                <input type="text" id="city" name="City" placeholder="City" class="pure-u-3-5">
+                                <select id="multi-state" placeholder="ST" class="pure-u-1-5">
+                                    <option value="" id="iden">State</option>
+                                    <option value='AL'>AL</option>
+                                    <option value='AK'>AK</option>
+                                    <option value='AZ'>AZ</option>
+                                    <option value='AR'>AR</option>
+                                    <option value='CA'>CA</option>
+                                    <option value='CO'>CO</option>
+                                    <option value='CT'>CT</option>
+                                    <option value='DE'>DE</option>
+                                    <option value='FL'>FL</option>
+                                    <option value='GA'>GA</option>
+                                    <option value='HI'>HI</option>
+                                    <option value='ID'>ID</option>
+                                    <option value='IL'>IL</option>
+                                    <option value='IN'>IN</option>
+                                    <option value='IA'>IA</option>
+                                    <option value='KS'>KS</option>
+                                    <option value='KY'>KY</option>
+                                    <option value='LA'>LA</option>
+                                    <option value='ME'>ME</option>
+                                    <option value='MD'>MD</option>
+                                    <option value='MA'>MA</option>
+                                    <option value='MI'>MI</option>
+                                    <option value='MN'>MN</option>
+                                    <option value='MS'>MS</option>
+                                    <option value='MO'>MO</option>
+                                    <option value='MT'>MT</option>
+                                    <option value='NE'>NE</option>
+                                    <option value='NV'>NV</option>
+                                    <option value='NH'>NH</option>
+                                    <option value='NJ'>NJ</option>
+                                    <option value='NM'>NM</option>
+                                    <option value='NY'>NY</option>
+                                    <option value='NC'>NC</option>
+                                    <option value='ND'>ND</option>
+                                    <option value='OH'>OH</option>
+                                    <option value='OK'>OK</option>
+                                    <option value='OR'>OR</option>
+                                    <option value='PA'>PA</option>
+                                    <option value='RI'>RI</option>
+                                    <option value='SC'>SC</option>
+                                    <option value='SD'>SD</option>
+                                    <option value='TN'>TN</option>
+                                    <option value='TX'>TX</option>
+                                    <option value='UT'>UT</option>
+                                    <option value='VT'>VT</option>
+                                    <option value='VA'>VA</option>
+                                    <option value='WA'>WA</option>
+                                    <option value='WV'>WV</option>
+                                    <option value='WI'>WI</option>
+                                    <option value='WY'>WY</option>
+                                </select>
+                            </div>
+                            <div class="pure-u-1-2">
+                                <input type="checkbox" id="current-geo" name="geolocation" class="pure-u-1-12">
+                                <label for="geolocation" class="pure-u-2-5">Use my current location!</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div id="distance">
+                        <p>How far are you willing to travel (in miles)?</p>
+                        <input type="number" id="distance" name="Distance">
+                    </div>
+                    <button type="submit" id="submitbtn" class="pure-button">Submit!</button>
+                </fieldset>
+            </form>
     </header>
 
     <main>
