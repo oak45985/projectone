@@ -190,10 +190,11 @@ var getParkState = function(sT, latitude, longitude) {
                     var parks = response.data;
                     var limitMiles = document.getElementById("milesTravel").value;
                     console.log(limitMiles);
+                    console.log(parks);
 
                     // resituate the items for only what we need park name, lat, lon, activities[]
                     var latLonArray = parks.map(function(park){
-                        return {name: park.fullName, lat: park.latitude, lon: park.longitude, activities: park.activities};
+                        return {name: park.fullName, address: park.addresses, lat: park.latitude, lon: park.longitude, activities: park.activities};
                     });
                     console.log(latLonArray);
                     // filter parks by calculating distance input [distance();] formula
@@ -209,7 +210,7 @@ var getParkState = function(sT, latitude, longitude) {
                         return withinDistance && validActivities;
                         
                     });
-                    console.log(filteredParksArray);
+                    displayItems(filteredParksArray);
                     // display(filteredParksArray);
 
             });
@@ -219,8 +220,12 @@ var getParkState = function(sT, latitude, longitude) {
     });
 };
 
-// console.log(distance(50, 50.1, 30, 30.31));
+function displayItems(filteredParksArray) {
+    console.log(filteredParksArray);
 
-// submitBtnEl.addEventListener('click',reverseGeocodeStateInput);
+
+
+}
+
 submitBtnEl.addEventListener('click',printItems);
 submitBtnEl.addEventListener('click',chooseLocation);
