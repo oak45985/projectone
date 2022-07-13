@@ -52,13 +52,13 @@ const stateAbbrev = [
     {full: 'Wyoming', st: 'WY'},
     
 ]
-var cityInputEl = document.querySelector("#city");
-var stInputEl = document.querySelector("#multi-state");
-var currentGeoInputEl = document.querySelector("#current-geo");
-var distanceInputEl = document.querySelector("#distance");
+
+
 var submitBtnEl = document.querySelector("#submitbtn");
 var selectedActivities = [];
 
+// 
+// START get Activities
 function printItems(event) {
     event.preventDefault();
     selectedActivities = [];
@@ -73,7 +73,8 @@ function printItems(event) {
     }
     console.log(selectedActivities);
 };
-
+// END get Activities
+// 
 // calculate distance between lat/lon points
 function distance(lat1, lat2, lon1, lon2)
 {
@@ -96,11 +97,21 @@ let r = 3956;
 return(c * r);
 
 };
+// END calculate distance between lat/lon points
+// 
+
+function chooseLocation(event) {
+    event.preventDefault();
+    if (document.querySelector("#current-geo").checked) {
+        navigator.geolocation.getCurrentPosition(onSuccess);
+        onSuccess(position);
+    } else {
+        reverseGeocodeStateInput();
+    }
+}
 
 // 
 // GEOLOCATION START for CURRENT POSITION
-// 
-
 // navigator.geolocation.getCurrentPosition(onSuccess);
 
 function onSuccess(position) {
@@ -122,7 +133,12 @@ var apiUrlGeo = "http://api.openweathermap.org/geo/1.0/reverse?lat=" + latitude 
 fetch(apiUrlGeo).then(function(response) {
     if (response.ok) {
         response.json().then(function(data) {
+            console.log(latitude);
+            console.log(longitude);
             console.log(data[0].state);
+            var state = stateAbbrev.find(person => person.full === data[0].state);
+            var sT = state.st;
+            getParkState(sT, latitude,longitude);
         });
     }  else {
         console.log("something aint right");
@@ -130,57 +146,50 @@ fetch(apiUrlGeo).then(function(response) {
 });
 
 };
-
 // 
 // GEOLOCATION END for CURRENT POSITION
-// 
 
 // 
-// GEOLOCATION START for COORDINATE INPUT
-// 
-var limitMiles = 500;
-var latitude = 63.004049;
-var longitude = -152.363762;
-
-
+// GEOLOCATION START for City, ST INPUT
 function reverseGeocodeStateInput() {
+    // event.preventDefault();
+    var cityEl = document.getElementById("city").value;
+    var stateEl = document.getElementById("multi-state").value;
+    console.log(cityEl);
+    console.log(stateEl);
 
-    var apiUrlGeo = "http://api.openweathermap.org/geo/1.0/reverse?lat=" + latitude + "&lon=" + longitude + "&limit=5&appid=7fe9a570ce699e734be31068fc9c9690"
+    var apiUrlGeo = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityEl + "," + stateEl + "," + "US&limit=1&appid=7fe9a570ce699e734be31068fc9c9690"
     
     fetch(apiUrlGeo).then(function(response) {
         if (response.ok) {
             response.json().then(function(data) {
-                console.log(data[0].state);
-                var state = stateAbbrev.find(person => person.full === data[0].state);
-                console.log(state);
-                var sT = state.st
-                console.log(sT);
-                getParkState(sT);
+                var latitude = data[0].lat;
+                var longitude = data[0].lon
+                var sT = stateEl;
+                getParkState(sT, latitude, longitude);
             });
         }  else {
             console.log("something aint right");
         }
     });
 };
-
-reverseGeocodeStateInput();
-
-// 
-// GEOLOCATION END for COORDINATE INPUT
+ // GEOLOCATION END for City, ST INPUT
 // 
 
 // var state = stateAbbrev.find(person => person.full === 'Alaska');
 // console.log(state.st);
 
-var getParkState = function(sT) {
+var getParkState = function(sT, latitude, longitude) {
     // geocoding
     var apiUrl = "https://developer.nps.gov/api/v1/parks?stateCode=" + sT + "%2C&api_key=yybIcE0sfUB4sAAd0pJkOErlOxwfBed2vqtPbYDw"
 
     fetch(apiUrl).then(function(response) {
         if (response.ok) {
             response.json().then(function(response) {
-
+                    var limitMiles = [];
                     var parks = response.data;
+                    var limitMiles = document.getElementById("milesTravel").value;
+                    console.log(limitMiles);
 
                     // resituate the items for only what we need park name, lat, lon, activities[]
                     var latLonArray = parks.map(function(park){
@@ -210,6 +219,8 @@ var getParkState = function(sT) {
     });
 };
 
-console.log(distance(50, 50.1, 30, 30.31));
+// console.log(distance(50, 50.1, 30, 30.31));
 
+// submitBtnEl.addEventListener('click',reverseGeocodeStateInput);
 submitBtnEl.addEventListener('click',printItems);
+submitBtnEl.addEventListener('click',chooseLocation);
