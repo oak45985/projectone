@@ -13,3 +13,7 @@ img {
     justify-content: center;
     text-align:center;
   }
+
+.color {
+    background-color: darkgreen;
+}
