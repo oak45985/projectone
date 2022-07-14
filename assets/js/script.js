@@ -53,7 +53,7 @@ const stateAbbrev = [
     
 ]
 
-
+var lineElementEl = document.getElementById("line");
 var submitBtnEl = document.querySelector("#submitbtn");
 var selectedActivities = [];
 
@@ -112,16 +112,12 @@ function chooseLocation(event) {
 
 // 
 // GEOLOCATION START for CURRENT POSITION
-// navigator.geolocation.getCurrentPosition(onSuccess);
 
 function onSuccess(position) {
     const {
         latitude,
         longitude
     } = position.coords;
-    console.log(`Your location: (${latitude},${longitude})`);
-    console.log(latitude, longitude);
-    console.log(position);
 
     reverseGeocode(latitude, longitude);
 }
@@ -133,9 +129,6 @@ var apiUrlGeo = "http://api.openweathermap.org/geo/1.0/reverse?lat=" + latitude 
 fetch(apiUrlGeo).then(function(response) {
     if (response.ok) {
         response.json().then(function(data) {
-            console.log(latitude);
-            console.log(longitude);
-            console.log(data[0].state);
             var state = stateAbbrev.find(person => person.full === data[0].state);
             var sT = state.st;
             getParkState(sT, latitude,longitude);
@@ -155,8 +148,6 @@ function reverseGeocodeStateInput() {
     // event.preventDefault();
     var cityEl = document.getElementById("city").value;
     var stateEl = document.getElementById("multi-state").value;
-    console.log(cityEl);
-    console.log(stateEl);
 
     var apiUrlGeo = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityEl + "," + stateEl + "," + "US&limit=1&appid=7fe9a570ce699e734be31068fc9c9690"
     
@@ -176,9 +167,6 @@ function reverseGeocodeStateInput() {
  // GEOLOCATION END for City, ST INPUT
 // 
 
-// var state = stateAbbrev.find(person => person.full === 'Alaska');
-// console.log(state.st);
-
 var getParkState = function(sT, latitude, longitude) {
     // geocoding
     var apiUrl = "https://developer.nps.gov/api/v1/parks?stateCode=" + sT + "%2C&api_key=yybIcE0sfUB4sAAd0pJkOErlOxwfBed2vqtPbYDw"
@@ -194,7 +182,7 @@ var getParkState = function(sT, latitude, longitude) {
 
                     // resituate the items for only what we need park name, lat, lon, activities[]
                     var latLonArray = parks.map(function(park){
-                        return {name: park.fullName, address: park.addresses, lat: park.latitude, lon: park.longitude, activities: park.activities};
+                        return {name: park.fullName, address: park.addresses, lat: park.latitude, lon: park.longitude, activities: park.activities, images: park.images};
                     });
                     console.log(latLonArray);
                     // filter parks by calculating distance input [distance();] formula
@@ -206,11 +194,12 @@ var getParkState = function(sT, latitude, longitude) {
                         });
 
                         const validActivities = activityIntersection.length === selectedActivities.length;
-                        console.log(park.name,activityIntersection);
+                        // console.log(park.name,activityIntersection);
                         return withinDistance && validActivities;
                         
                     });
                     displayItems(filteredParksArray);
+                    saveParks(filteredParksArray);
                     // display(filteredParksArray);
 
             });
@@ -220,12 +209,88 @@ var getParkState = function(sT, latitude, longitude) {
     });
 };
 
+
 function displayItems(filteredParksArray) {
-    console.log(filteredParksArray);
+    // console.log(filteredParksArray);
 
+    for (var i=0; i < filteredParksArray.length; i++) {
 
+    var parkDivEl = document.createElement("div");
+    parkDivEl.className="pure-u-1 pure-g searchqueries";
+    lineElementEl.appendChild(parkDivEl)
+
+    var parkNameEl = document.createElement("h2");
+    parkNameEl.className = "pure-u-1 center";
+    parkNameEl.textContent = filteredParksArray[i].name;
+    parkDivEl.appendChild(parkNameEl);
+
+    var parkImageEl = document.createElement("div");
+    parkImageEl.className = "pure-u-1 center";
+    parkImageEl.id = "park-image"
+    parkImageEl.innerHTML = "<img src='"+ filteredParksArray[i].images[0].url + "' alt='" + filteredParksArray[i].images[0].altText + "'/>";
+    parkNameEl.appendChild(parkImageEl);
+
+    var parkAddressEl = document.createElement("p");
+    parkAddressEl.className = "pure-u-1 center";
+    var parkAdAdd = filteredParksArray[i].address[0].line1;
+    var parkAdCity = filteredParksArray[i].address[0].city;
+    var parkAdSt = filteredParksArray[i].address[0].stateCode;
+    var parkAdPost = filteredParksArray[i].address[0].postalCode;
+    parkAddressEl.textContent = parkAdAdd + " " + parkAdCity + ", " + parkAdSt + "  " + parkAdPost;
+    parkImageEl.appendChild(parkAddressEl);
+
+    // var parkWeatherEl = document.createElement("p");
+    // var parkTempEl = document.createElement("p");
+    // var weatherUrl = "https://api.openweathermap.org/data/2.5/weather?lat=" + filteredParksArray[i].lat + "&lon=" + filteredParksArray[i].lon + "&units=imperial&appid=7fe9a570ce699e734be31068fc9c9690";
+    // fetch(weatherUrl).then(function(response) {
+    //     if(response.ok) {
+    //         response.json().then(function(data) {
+    //             console.log(data);
+    //             var temp = data.main.feels_like;
+    //             var overall = data.weather[0].description;
+    //             parkTempEl.className = "pure-1-2";
+    //             parkTempEl.textContent = temp + "°F, ";
+    //             parkAddressEl.appendChild(parkTempEl);
+    //             parkWeatherEl.className = "pure-1-2";
+    //             parkWeatherEl.textContent = overall;
+    //             parkAddressEl.appendChild(parkWeatherEl);
+
+    //         });
+    //     } else {
+    //         console.log("something aint right");
+    //     }
+    // });
+    
+    };
 
 }
 
+var allItems = function(event) {
+    event.preventDefault();
+    var searchQueries = document.getElementsByClassName("pure-u-1 pure-g searchqueries");
+    searchQueries.remove();
+}
+
+var saveParks = function(filteredParksArray) {
+    localStorage.setItem("parks", JSON.stringify(filteredParksArray));
+}
+
+var loadParks = function() {
+    var savedParks = localStorage.getItem("parks");
+
+    if (!savedParks) {
+        return false;
+    }
+
+    savedParks = JSON.parse(savedParks);
+
+    for (var i = 0; i < 1; i++) {
+        displayItems(savedParks);
+    }
+};
+
+
+submitBtnEl.addEventListener('click', allItems);
 submitBtnEl.addEventListener('click',printItems);
 submitBtnEl.addEventListener('click',chooseLocation);
+loadParks();
