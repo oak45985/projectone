@@ -125,7 +125,7 @@ function onSuccess(position) {
 
 function reverseGeocode(latitude, longitude) {
 
-var apiUrlGeo = "http://api.openweathermap.org/geo/1.0/reverse?lat=" + latitude + "&lon=" + longitude + "&limit=5&appid=7fe9a570ce699e734be31068fc9c9690"
+var apiUrlGeo = "https://api.openweathermap.org/geo/1.0/reverse?lat=" + latitude + "&lon=" + longitude + "&limit=5&appid=7fe9a570ce699e734be31068fc9c9690"
 
 fetch(apiUrlGeo).then(function(response) {
     if (response.ok) {
@@ -150,7 +150,7 @@ function reverseGeocodeStateInput() {
     var cityEl = document.getElementById("city").value;
     var stateEl = document.getElementById("multi-state").value;
 
-    var apiUrlGeo = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityEl + "," + stateEl + "," + "US&limit=1&appid=7fe9a570ce699e734be31068fc9c9690"
+    var apiUrlGeo = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityEl + "," + stateEl + "," + "US&limit=1&appid=7fe9a570ce699e734be31068fc9c9690"
     
     fetch(apiUrlGeo).then(function(response) {
         if (response.ok) {
