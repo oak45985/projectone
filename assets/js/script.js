@@ -170,6 +170,9 @@ function reverseGeocodeStateInput() {
 
 var getParkState = function(sT, latitude, longitude) {
     // geocoding
+    displayItems([]);
+    saveParks([]);
+
     var apiUrl = "https://developer.nps.gov/api/v1/parks?stateCode=" + sT + "%2C&api_key=yybIcE0sfUB4sAAd0pJkOErlOxwfBed2vqtPbYDw"
 
     fetch(apiUrl).then(function(response) {
@@ -199,6 +202,7 @@ var getParkState = function(sT, latitude, longitude) {
                         return withinDistance && validActivities;
                         
                     });
+
                     displayItems(filteredParksArray);
                     saveParks(filteredParksArray);
                     // display(filteredParksArray);
@@ -268,8 +272,13 @@ function displayItems(filteredParksArray) {
 
 var allItems = function(event) {
     event.preventDefault();
-    var searchQueriesEl = document.getElementsByClassName("pure-u-1 pure-g searchqueries");
-    searchQueriesEl.remove();
+
+    const boxes = Array.from(document.getElementsByClassName("pure-u-1 pure-g searchqueries"));
+
+    boxes.forEach(box => {
+        box.remove();
+});
+
 }
 
 var saveParks = function(filteredParksArray) {
@@ -285,9 +294,7 @@ var loadParks = function() {
 
     savedParks = JSON.parse(savedParks);
 
-    for (var i = 0; i < 1; i++) {
-        displayItems(savedParks);
-    }
+    displayItems(savedParks);
 };
 
 submitBtnEl.addEventListener('click',allItems);
