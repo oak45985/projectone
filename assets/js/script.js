@@ -56,6 +56,7 @@ const stateAbbrev = [
 var lineElementEl = document.getElementById("line");
 var submitBtnEl = document.querySelector("#submitbtn");
 var selectedActivities = [];
+var searchQueriesEl = [];
 
 // 
 // START get Activities
@@ -267,8 +268,8 @@ function displayItems(filteredParksArray) {
 
 var allItems = function(event) {
     event.preventDefault();
-    var searchQueries = document.getElementsByClassName("pure-u-1 pure-g searchqueries");
-    searchQueries.remove();
+    var searchQueriesEl = document.getElementsByClassName("pure-u-1 pure-g searchqueries");
+    searchQueriesEl.remove();
 }
 
 var saveParks = function(filteredParksArray) {
@@ -289,8 +290,7 @@ var loadParks = function() {
     }
 };
 
-
-submitBtnEl.addEventListener('click', allItems);
+submitBtnEl.addEventListener('click',allItems);
 submitBtnEl.addEventListener('click',printItems);
 submitBtnEl.addEventListener('click',chooseLocation);
 loadParks();
