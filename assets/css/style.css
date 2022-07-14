@@ -1,0 +1,19 @@
+h1 {
+    flex: auto;
+    justify-content: space-around;
+}
+
+img {
+    width: 200px; /* width of container */
+    height: 200px; /* height of container */
+    object-fit: cover;
+}
+
+.center {
+    justify-content: center;
+    text-align:center;
+  }
+
+.color {
+    background-color: darkgreen;
+}
